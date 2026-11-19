@@ -1,4 +1,4 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Deploy static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -31,13 +31,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Pages
+        id: pages
         uses: actions/configure-pages@v5
+
+      # Copy only the site files, not repo files like .github
+      - name: Prepare site folder
+        run: |
+          mkdir _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' --exclude '.gitignore' ./ _site/
+
+      # Share previews (WhatsApp, etc.) need absolute URLs, so fill in the real site address
+      - name: Set site URL in share tags
+        run: |
+          base="${{ steps.pages.outputs.base_url }}/"
+          find _site -name '*.html' -exec sed -i "s|__SITE_URL__|${base}|g" {} +
+
+      - name: Guard against .html links
+        run: |
+          if grep -rEq 'href="[^"]*\.html' _site --include=index.html; then
+            echo "Found a link ending in .html"; exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: '_site'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
