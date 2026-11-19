@@ -28,7 +28,13 @@ a:hover{color:#2E2790;text-decoration:underline}
 a:focus-visible,button:focus-visible{outline:3px solid #FF6B57;outline-offset:3px}
 h1,h2{text-wrap:balance}
 main p a,main li a{text-decoration:underline;text-underline-offset:3px}
-a.nav{transition:background .15s ease}
+a[style*="999px"]{transition-property:background-color,scale,opacity;transition-duration:150ms;transition-timing-function:cubic-bezier(.2,0,0,1);min-height:44px;box-sizing:border-box;display:inline-flex !important;align-items:center}
+a[style*="999px"]:active{scale:.96}
+[style*="border: 1px solid #E3E6F2"]{border-color:transparent !important;box-shadow:0 0 0 1px rgba(18,18,43,.06),0 1px 2px rgba(18,18,43,.06),0 6px 16px rgba(18,18,43,.06)}
+img[alt*="logo"]{outline:1px solid rgba(0,0,0,.1);outline-offset:-1px}
+p{text-wrap:pretty}
+.num{font-variant-numeric:tabular-nums}
+a.nav{transition:background-color .15s ease}
 a.nav:hover{background:#EEF0FF;text-decoration:none;color:#2E2790}
 a.card{transition:transform .2s ease,box-shadow .2s ease}
 a.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(18,18,43,.10);text-decoration:none}

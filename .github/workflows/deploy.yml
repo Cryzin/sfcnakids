@@ -27,22 +27,27 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
+      - name: Copy site files (without repo files)
+        run: |
+          mkdir _site
+          rsync -a --exclude '.git' --exclude '.github' --exclude '_site' --exclude '.gitignore' ./ _site/
+
       # Share-preview tags (WhatsApp, etc.) need absolute URLs.
-      # Fill the placeholder with the real site address (custom domain or github.io).
+      # Fill the placeholder with the real site address.
       - name: Set site URL in share tags
         run: |
           base="${{ steps.pages.outputs.base_url }}/"
-          find site -name '*.html' -exec sed -i "s|__SITE_URL__|${base}|g" {} +
+          find _site -name '*.html' -exec sed -i "s|__SITE_URL__|${base}|g" {} +
 
       - name: Guard against .html links
         run: |
-          if grep -rEq 'href="[^"]*\.html' site --include=index.html; then
+          if grep -rEq 'href="[^"]*\.html' _site --include=index.html; then
             echo "Found a link ending in .html"; exit 1
           fi
 
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: _site
 
       - id: deployment
         uses: actions/deploy-pages@v4
